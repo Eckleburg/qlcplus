@@ -452,8 +452,17 @@ void RGBMatrixEditor::createScriptObjects(QQuickItem *parent)
                         Q_ARG(QVariant, pValue.toInt()));
             }
             break;
+            case RGBScriptProperty::String:
+            {
+                QString pValue = m_matrix->property(prop.m_name);
+
+                QMetaObject::invokeMethod(parent, "addStringBox",
+                        Q_ARG(QVariant, prop.m_name),
+                        Q_ARG(QVariant, pValue.toInt()));
+            }
+            break;
             default:
-                qWarning() << "Type" << prop.m_type << "not handled yet";
+                qWarning() << "BS: Type" << prop.m_type << "not handled yet";
             break;
         }
     }

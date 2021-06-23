@@ -885,6 +885,14 @@ Rectangle
                     console.log("Spin component is not ready !!")
             }
 
+            function addStringBox(propName, currentValue)
+            {
+                stringComponent.createObject(scriptAlgoGrid,
+                              {"propName": propName, "value": currentValue });
+                if (stringComponent.status !== Component.Ready)
+                    console.log("String component is not ready !!")
+            }
+
             Component.onCompleted:
             {
                 rgbMatrixEditor.createScriptObjects(scriptAlgoGrid)
@@ -932,6 +940,20 @@ Rectangle
             property string propName
 
             onValueModified: rgbMatrixEditor.setScriptIntProperty(propName, value)
+        }
+    }
+
+    // Script algorithm string box property
+    Component
+    {
+        id: stringComponent
+
+        CustomStringBox
+        {
+            Layout.fillWidth: true
+            property string propName
+
+            onValueModified: rgbMatrixEditor.setScriptStringProperty(propName, value)
         }
     }
 

@@ -28,6 +28,7 @@
 #include <QGradient>
 #include <QSettings>
 #include <QComboBox>
+#include <QLineEdit>
 #include <QSpinBox>
 #include <QLabel>
 #include <QTimer>
@@ -537,6 +538,31 @@ void RGBMatrixEditor::displayProperties(RGBScript *script)
                         pValue = script->property(prop.m_name);
                         if (!pValue.isEmpty())
                             propSpin->setValue(pValue.toInt());
+                    }
+                }
+                gridRowIdx++;
+            }
+            break;
+            case RGBScriptProperty::String:
+            {
+                QLabel *propLabel = new QLabel(prop.m_displayName);
+                m_propertiesLayout->addWidget(propLabel, gridRowIdx, 0);
+                QLineEdit *lineEdit = new QLineEdit(this);
+                // propSpin->setRange(prop.m_rangeMinValue, prop.m_rangeMaxValue);
+                lineEdit->setProperty("pName", prop.m_name);
+                connect(lineEdit, SIGNAL(textChanged(QString)),
+                        this, SLOT(slotPropertyStringChanged(QString)));
+                m_propertiesLayout->addWidget(lineEdit, gridRowIdx, 1);
+                if (m_matrix != NULL)
+                {
+                    QString pValue = m_matrix->property(prop.m_name);
+                    if (!pValue.isEmpty())
+                        lineEdit->setText(pValue);
+                    else
+                    {
+                        pValue = script->property(prop.m_name);
+                        if (!pValue.isEmpty())
+                            lineEdit->setText(pValue);
                     }
                 }
                 gridRowIdx++;
@@ -1179,6 +1205,19 @@ void RGBMatrixEditor::slotPropertySpinChanged(int value)
         m_matrix->setProperty(pName, QString::number(value));
     }
 }
+
+void RGBMatrixEditor::slotPropertyStringChanged(QString value)
+{
+    qDebug() << "Property string changed to" << value;
+    if (m_matrix->algorithm() == NULL ||
+        m_matrix->algorithm()->type() == RGBAlgorithm::Script)
+    {
+        QLineEdit *line = (QLineEdit *)sender();
+        QString pName = line->property("pName").toString();
+        m_matrix->setProperty(pName, value);
+    }
+}
+
 
 FunctionParent RGBMatrixEditor::functionParent() const
 {

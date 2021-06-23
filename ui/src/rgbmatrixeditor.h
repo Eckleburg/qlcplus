@@ -117,6 +117,7 @@ private slots:
 
     void slotPropertyComboChanged(QString value);
     void slotPropertySpinChanged(int value);
+    void slotPropertyStringChanged(QString value);
 
 private:
     FunctionParent functionParent() const;
